@@ -1,0 +1,123 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Musical Instrument</title>
+
+    <!-- Load Tone.js to create musical sounds -->
+    <script src="https://unpkg.com/tone"></script>
+</head>
+<body>
+    <h1>My Musical Instrument</h1>
+    <p>Click Start, then use your keyboard to play.</p>
+
+    <button id="start">Start Instrument</button>
+    <p id="status">Press Start to begin.</p>
+
+    <script>
+        // Create a synthesizer for playing notes
+        const synth = new Tone.Synth().toDestination();
+
+        // Store the notes and their keyboard keys
+        const notes = {
+            a: "C4",
+            s: "D4",
+            d: "E4",
+            f: "F4",
+            g: "G4",
+            h: "A4",
+            j: "B4"
+        };
+
+        // Store the current instrument settings
+        const settings = {
+            playing: false,
+            sound: "sine"
+        };
+
+        // Remember which note is currently playing
+        let activeNote = "";
+
+        // Author: at2061
+       // Update the message shown on the page
+        function update() {
+            if (settings.playing) {
+                document.getElementById("status").textContent =
+                    "Ready! Sound: " + settings.sound +
+                    ". Use A S D F G H J to play.";
+            } else {
+                document.getElementById("status").textContent =
+                    "Press Start to begin.";
+            }
+        }
+
+        // Start the instrument when the button is clicked
+        // Author: at2061
+        async function setup() {
+            await Tone.start();
+            settings.playing = true;
+            update();
+        }
+
+        // Author: at2061
+        // Use the keyboard to play notes or change the sound
+        function useInstrument(key) {
+            if (!settings.playing) {
+                return;
+            }
+
+            // Select the sine sound when 1 is pressed
+            if (key === "1") {
+                settings.sound = "sine";
+                synth.set({
+                    oscillator: { type: settings.sound }
+                });
+                update();
+
+            // Select the square sound when 2 is pressed
+            } else if (key === "2") {
+                settings.sound = "square";
+                synth.set({
+                    oscillator: { type: settings.sound }
+                });
+                update();
+
+            // Play a note if a valid note key is pressed
+            } else if (notes[key] && activeNote === "") {
+                synth.triggerAttack(notes[key]);
+                activeNote = key;
+            }
+        }
+
+        // Author: at2061
+        //Stop the note when its key is released
+        function stopNote(key) {
+            if (key === activeNote) {
+                synth.triggerRelease();
+                activeNote = "";
+            }
+        }
+
+        // Connect the Start button to the setup function
+        document.getElementById("start").addEventListener("click", setup);
+
+        // Check which key is pressed
+        document.addEventListener("keydown", function(event) {
+            // Ignore repeated events while a key is held down
+            if (event.repeat) {
+                return;
+            }
+
+            useInstrument(event.key.toLowerCase());
+        });
+
+        // Check when a key is released
+        document.addEventListener("keyup", function(event) {
+            stopNote(event.key.toLowerCase());
+        });
+
+        // Show the initial status when the page opens
+        update();
+    </script>
+</body>
+</html>
