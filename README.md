@@ -25,3 +25,6 @@ This is a simple musical instrument made with JavaScript and Tone.js.
 - HTML
 - JavaScript
 - Tone.js
+- ## Live Website
+
+[Open My Musical Instrument](https://naveed702702.github.io/A1-Modeling/)
